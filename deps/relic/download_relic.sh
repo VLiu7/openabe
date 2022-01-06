@@ -2,7 +2,7 @@
 
 VERSION=0.5.0
 FORMAT=tar.gz
-LINK=https://github.com/relic-toolkit/relic
+LINK=https://github.com.cnpmjs.org/relic-toolkit/relic
 RELIC=${1:-relic-toolkit-${VERSION}}
 # commit of as of 1/9/2019
 # comment 'Update LABEL with recent changes'

@@ -8,13 +8,13 @@ COMMIT=560096f804a3712eea161726a8f085beefe8838a
 
 # openssl with BP support
 if [[ $CMD == "with-bp" ]]; then
-   LINK=https://github.com/zeutro/openssl
+   LINK=https://github.com.cnpmjs.org/zeutro/openssl
    VERSION=1.1.1-dev-bp
    echo "Clone github repo @ ${LINK}"
    git clone -b patch ${LINK} openssl-${VERSION}.git
    cd openssl-${VERSION}.git
 else
-   LINK=https://github.com/openssl/openssl
+   LINK=https://github.com.cnpmjs.org/openssl/openssl
    VERSION=1.1.1-dev
    echo "Clone github repo @ ${LINK}"
    git clone ${LINK} openssl-${VERSION}.git

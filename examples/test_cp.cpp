@@ -32,33 +32,57 @@
 #include <cassert>
 #include <openabe/openabe.h>
 #include <openabe/zsymcrypto.h>
+#include<time.h>
+#include <random>
 
 using namespace std;
 using namespace oabe;
 using namespace oabe::crypto;
 
 int main(int argc, char **argv) {
-
+  clock_t startTime,endTime;
   InitializeOpenABE();
 
   cout << "Testing CP-ABE context" << endl;
 
   OpenABECryptoContext cpabe("CP-ABE");
 
-  string ct, pt1 = "hello world!", pt2;
-
+  string ct, pt3,pt1 = "C4UZBLx3Bn5SPsk8dlylwbhfKUcKa35vvZ1dCMPMgYepkcNrDsJzgYRfyzqfDQfKAMqskqOttutB6WmSlVH2atkpvslnmK6BYgGCXbHmFFP7YsuuO1793nuDEY1njLnTc8hd9BNPogN05fj3EGIZIr5AC2QNUXoj", pt2;
   cpabe.generateParams();
 
   cpabe.keygen("|attr1|attr2", "key0");
 
-  cpabe.encrypt("attr1 and attr2", pt1, ct);
+  int length=0;
+  bool result;
+  char tmp;
+  for(int i=1;i<=10;i++){
+    length=i*1000;
+    pt3="";
+    for (int i = 0; i < length; i++) {
+      tmp = random() % 36;	// 随机一个小于 36 的整数，0-9、A-Z 共 36 种字符
+      if (tmp < 10) {			// 如果随机数小于 10，变换成一个阿拉伯数字的 ASCII
+        tmp += '0';
+      } else {				// 否则，变换成一个大写字母的 ASCII
+        tmp -= 10;
+        tmp += 'A';
+      }
+      pt3 += tmp;
+    }
+    cout<<"string length:"<<pt3.length()<<endl;
+    startTime = clock();
+    cpabe.encrypt("attr1 and attr2", pt3, ct);
+    endTime = clock();
+    cout << "encrypt Time : " <<(double)(endTime - startTime)*1000/CLOCKS_PER_SEC << "ms" << endl;
+    cout << "Ciphertext length:"<<ct.length()<<endl;
+    startTime = clock();
+    result = cpabe.decrypt("key0", ct, pt2);
+    endTime = clock();
+    cout << "decrypt  Time : " <<(double)(endTime - startTime)*1000/CLOCKS_PER_SEC  << "ms" << endl;
 
-  bool result = cpabe.decrypt("key0", ct, pt2);
+    assert(result && pt3 == pt2);
 
-  assert(result && pt1 == pt2);
-
-  cout << "Recovered message: " << pt2 << endl;
-
+    //cout << "Recovered message: " << pt2 << endl;  
+  }
   ShutdownOpenABE();
 
   return 0;
